@@ -124,7 +124,7 @@ databaseChangeLog:
                   value: testuser1@example.com
               - column:
                   name: password
-                  value: $2y$10$4c6gQGtVIpy1.mSugS5rEONNqZgP8O.XjdVjAToI3rkTy0CZoZUla
+                  value: $2a$10$DeAlIPPdICXnp6qIq1EsT.MzubYXFNWE.5fwJ4xd9ORzVJyi/ONOK # password
 
         - insert:
             tableName: users
@@ -146,7 +146,7 @@ databaseChangeLog:
                   value: testuser2@example.com
               - column:
                   name: password
-                  value: $2y$10$pT6Xb1Dt8XSGulTV0AS//uBfGDY5C6yCSWO9Ma8rEnXeoREFWvABm
+                  value: $2a$10$DeAlIPPdICXnp6qIq1EsT.MzubYXFNWE.5fwJ4xd9ORzVJyi/ONOK # password
 
         - insert:
             tableName: users
@@ -168,7 +168,7 @@ databaseChangeLog:
                   value: testuser3@example.com
               - column:
                   name: password
-                  value: $2y$10$bsUvbwBCYfO88KzpATVLwuF7D34Vq6oqWie7i9.2Gtc8XshqWvwHy
+                  value: $2a$10$DeAlIPPdICXnp6qIq1EsT.MzubYXFNWE.5fwJ4xd9ORzVJyi/ONOK # password
 
         - insert:
             tableName: user_role
