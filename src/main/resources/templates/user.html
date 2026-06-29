@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>User page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}">
+    <style>
+        .header-bar {
+            background-color: darkgrey;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-column {
+            min-height: 100vh;
+        }
+        .user-table-container {
+            width: 1000px;
+        }
+        .user-table-container td {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-bar">
+    <div>
+        <span th:text="${authUser.email}"></span> with roles:
+        <span th:each="role, iter : ${authUser.roles}">
+            <span th:if="${role.roleName == 'ROLE_ADMIN'}">ADMIN</span>
+            <span th:if="${role.roleName == 'ROLE_USER'}">USER</span>
+            <span th:if="${!iter.last}"> </span>
+        </span>
+    </div>
+    <div>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-link text-muted">Logout</button>
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 nav-column">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">User</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+            <h2>User information-page</h2>
+            <div class="card">
+                <div class="card-header">About user</div>
+                <div class="card-body">
+                    <div class="user-table-container">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Age</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td th:text="${authUser.id}"></td>
+                                <td th:text="${authUser.firstName}"></td>
+                                <td th:text="${authUser.lastName}"></td>
+                                <td th:text="${authUser.age}"></td>
+                                <td th:text="${authUser.email}"></td>
+                                <td>
+                                    <span th:each="role, iter : ${authUser.roles}">
+                                        <span th:if="${role.roleName == 'ROLE_ADMIN'}">ADMIN</span>
+                                        <span th:if="${role.roleName == 'ROLE_USER'}">USER</span>
+                                        <span th:if="${!iter.last}"> </span>
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
