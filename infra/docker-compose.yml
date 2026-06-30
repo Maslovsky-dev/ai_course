@@ -42,3 +42,11 @@ services:
     volumes: # Подключаем файл миграций с компьютера внутрь контейнера.
       - ./liquibase/changelog/db.changelog-master.yaml:/liquibase/db.changelog-master.yaml:ro # `ro` запрещает контейнеру менять файл.
     restart: "no" # После применения миграций контейнер завершается и не перезапускается.
+  sonarqube: # Контейнер с SonarQube Community Edition для анализа качества Java-кода.
+    image: sonarqube:lts-community # LTS-версия SonarQube Community Edition.
+    container_name: ai-course-week2-sonarqube # Имя контейнера для `docker ps` и логов.
+    ports: # Пробрасываем веб-интерфейс SonarQube на компьютер студента.
+      - "9000:9000" # SonarQube будет доступен по адресу http://localhost:9000. Вход по admin | admin. Затем UI предложит придумать новый пароль
+    environment: # Настройки для упрощённого локального запуска.
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true" # Отключает bootstrap-проверки Elasticsearch для учебной среды.
+    restart: unless-stopped # Автоматически перезапускать контейнер при сбое.
