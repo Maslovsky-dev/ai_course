@@ -45,7 +45,7 @@ public class RESTController {
     public List<UserDTO> getAllUsers() {
         return userService.findAll().stream()
                 .map(this::convertToUserDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/{id}")
@@ -56,17 +56,10 @@ public class RESTController {
     @PostMapping("/")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid UserDTO userDTO,
                                               BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
         User user = convertToUser(userDTO);
         userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            bindingResult.getFieldErrors().forEach(e ->
-                    errorMsg.append(e.getField())
-                            .append(" - ")
-                            .append(e.getDefaultMessage())
-                            .append(";"));
-            throw new UserNotCreatedException(errorMsg.toString());
-        }
+        validateBindingResult(bindingResult);
         userService.save(user);
         return ResponseEntity.ok().build();
     }
@@ -75,19 +68,20 @@ public class RESTController {
     public ResponseEntity<HttpStatus> update(@PathVariable Long id,
                                              @RequestBody @Valid UserDTO userDTO,
                                              BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            bindingResult.getFieldErrors().forEach(e ->
-                    errorMsg.append(e.getField())
-                            .append(" - ")
-                            .append(e.getDefaultMessage())
-                            .append(";"));
-            throw new UserNotCreatedException(errorMsg.toString());
-        }
+        validateBindingResult(bindingResult);
         userDTO.setId(id);
         User user = convertToUser(userDTO);
         userService.save(user);
         return ResponseEntity.ok().build();
+    }
+
+    private void validateBindingResult(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getFieldErrors().stream()
+                    .map(e -> e.getField() + " - " + e.getDefaultMessage())
+                    .collect(Collectors.joining(";"));
+            throw new UserNotCreatedException(errorMsg);
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -27,7 +27,7 @@ public class Role implements GrantedAuthority {
     }
 
     public String getRoleName() {
-        return roleName;
+        return getAuthority();
     }
 
     public void setRoleName(String roleName) {

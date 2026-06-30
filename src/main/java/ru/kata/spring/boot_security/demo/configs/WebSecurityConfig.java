@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,9 +22,17 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final String ADMIN = "ADMIN";
+
     private final UserDetailsService userDetailsService;
     private final AuthenticationSuccessHandler successUserHandler;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${security.auth.login-path:/auth/login}")
+    private String authLoginPath;
+
+    @Value("${security.users.path:/users/**}")
+    private String usersPath;
 
     @Autowired
     public WebSecurityConfig(UserDetailsService userDetailsService,
@@ -48,24 +57,24 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/error", "/js/**").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/users/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/users/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/users/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                        .requestMatchers(authLoginPath, "/error", "/js/**").permitAll()
+                        .requestMatchers("/admin").hasRole(ADMIN)
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, usersPath).hasRole(ADMIN)
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, usersPath).hasRole(ADMIN)
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, usersPath).hasRole(ADMIN)
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, usersPath).hasRole(ADMIN)
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login")
+                        .loginPage(authLoginPath)
                         .loginProcessingUrl("/process_login")
-                        .failureUrl("/auth/login?error")
+                        .failureUrl(authLoginPath + "?error")
                         .successHandler(successUserHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/auth/login")
+                        .logoutSuccessUrl(authLoginPath)
                         .permitAll()
                 )
                 .authenticationProvider(authenticationProvider());

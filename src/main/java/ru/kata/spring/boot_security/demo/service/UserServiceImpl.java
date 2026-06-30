@@ -23,13 +23,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    @Transactional
     public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with this id wasn't found"));
